@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Tracker - RES-Q LAGUNA Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        
+        .notification-badge {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        
+        #fullscreenMap {
+            height: calc(100vh - 64px);
+        }
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-slate-200 z-40">
+        <div class="p-6 border-b border-slate-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-red-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-slate-900">RES-Q LAGUNA</h1>
+                    <p class="text-xs text-slate-500">Dispatcher Portal</p>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="incidents.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Active Incidents
+            </a>
+            <a href="deploy.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Deploy Resources
+            </a>
+            <a href="tracker.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Resource Tracker
+            </a>
+            <a href="../index.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Top Navigation -->
+        <div class="bg-white border-b border-slate-200 sticky top-0 z-30">
+            <div class="flex items-center justify-between px-8 py-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">Resource Tracker</h1>
+                    <p class="text-sm text-slate-500">Real-time tracking of emergency response units and incidents</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleNotifications()" class="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-600 rounded-full notification-badge"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-slate-900" id="userName">Dispatcher User</p>
+                            <p class="text-xs text-slate-500">Dispatcher</p>
+                        </div>
+                        <button onclick="logout()" class="w-10 h-10 bg-gradient-to-br from-blue-600 to-red-600 rounded-lg flex items-center justify-center text-white font-semibold">
+                            D
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="relative">
+            <!-- Map Controls Panel -->
+            <div class="absolute top-4 left-4 z-[1000] bg-white rounded-xl shadow-lg border border-slate-200 p-4 w-80">
+                <h3 class="text-lg font-semibold text-slate-900 mb-4">Map Controls</h3>
+                
+                <!-- Layer Toggles -->
+                <div class="space-y-3 mb-4">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="showIncidents" checked class="w-4 h-4 text-blue-600 rounded">
+                        <span class="text-sm font-medium text-slate-700">Active Incidents</span>
+                        <span class="ml-auto px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium rounded">12</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="showAvailable" checked class="w-4 h-4 text-blue-600 rounded">
+                        <span class="text-sm font-medium text-slate-700">Available Units</span>
+                        <span class="ml-auto px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">28</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="showDeployed" checked class="w-4 h-4 text-blue-600 rounded">
+                        <span class="text-sm font-medium text-slate-700">Deployed Units</span>
+                        <span class="ml-auto px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">15</span>
+                    </label>
+                </div>
+
+                <!-- Agency Filter -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Filter by Agency</label>
+                    <select id="agencyFilter" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">All Agencies</option>
+                        <option value="bfp">BFP</option>
+                        <option value="doh">DOH</option>
+                        <option value="pnp">PNP</option>
+                        <option value="mdrrmo">MDRRMO</option>
+                        <option value="lgu">LGU</option>
+                    </select>
+                </div>
+
+                <!-- Proximity Analysis -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Proximity Analysis</label>
+                    <button id="proximityBtn" class="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                        </svg>
+                        Find Nearest Units
+                    </button>
+                </div>
+
+                <!-- Legend -->
+                <div>
+                    <p class="text-sm font-medium text-slate-700 mb-2">Legend</p>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-red-600 rounded"></div>
+                            <span class="text-slate-600">Critical Incident</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-orange-600 rounded"></div>
+                            <span class="text-slate-600">High Priority</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-green-600 rounded"></div>
+                            <span class="text-slate-600">Available Unit</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-blue-600 rounded"></div>
+                            <span class="text-slate-600">Deployed Unit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="absolute top-4 right-4 z-[1000] bg-white rounded-xl shadow-lg border border-slate-200 p-4 w-64">
+                <h3 class="text-lg font-semibold text-slate-900 mb-4">Live Statistics</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-600">Total Units</span>
+                        <span class="text-lg font-bold text-slate-900">43</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-600">Available</span>
+                        <span class="text-lg font-bold text-green-600">28</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-600">Deployed</span>
+                        <span class="text-lg font-bold text-blue-600">15</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-600">Active Incidents</span>
+                        <span class="text-lg font-bold text-red-600">12</span>
+                    </div>
+                </div>
+
+                <hr class="my-4 border-slate-200">
+
+                <!-- Agency Breakdown -->
+                <div>
+                    <p class="text-sm font-medium text-slate-700 mb-3">Agency Status</p>
+                    <div class="space-y-2">
+                        <div>
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="text-slate-600">BFP</span>
+                                <span class="text-slate-900 font-medium">8/12</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-green-600 h-1.5 rounded-full" style="width: 67%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="text-slate-600">DOH</span>
+                                <span class="text-slate-900 font-medium">6/10</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-green-600 h-1.5 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="text-slate-600">PNP</span>
+                                <span class="text-slate-900 font-medium">10/15</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-green-600 h-1.5 rounded-full" style="width: 67%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="text-slate-600">MDRRMO</span>
+                                <span class="text-slate-900 font-medium">4/8</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-yellow-500 h-1.5 rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fullscreen Map -->
+            <div id="fullscreenMap"></div>
+        </main>
+    </div>
+
+    <!-- Notifications Panel -->
+    <div id="notificationsPanel" class="hidden fixed right-4 top-20 w-96 bg-white rounded-xl shadow-2xl border border-slate-200 z-50">
+        <div class="p-4 border-b border-slate-200">
+            <h3 class="font-semibold text-slate-900">Notifications</h3>
+        </div>
+        <div class="max-h-96 overflow-y-auto">
+            <div class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer">
+                <div class="flex items-start gap-3">
+                    <div class="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900">New fire incident reported</p>
+                        <p class="text-xs text-slate-500 mt-1">Barangay San Jose - 2 minutes ago</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer">
+                <div class="flex items-start gap-3">
+                    <div class="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900">Flood warning issued</p>
+                        <p class="text-xs text-slate-500 mt-1">Barangay Riverside - 15 minutes ago</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer">
+                <div class="flex items-start gap-3">
+                    <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900">Incident resolved</p>
+                        <p class="text-xs text-slate-500 mt-1">Barangay Centro - 1 hour ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize fullscreen map
+        const map = L.map('fullscreenMap').setView([14.2456, 121.4747], 12);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Layer groups
+        const incidentsLayer = L.layerGroup().addTo(map);
+        const availableUnitsLayer = L.layerGroup().addTo(map);
+        const deployedUnitsLayer = L.layerGroup().addTo(map);
+
+        // Incident data
+        const incidents = [
+            { lat: 14.2456, lng: 121.4747, type: 'Fire Emergency', severity: 'critical', id: 'INC-0847', color: '#dc2626' },
+            { lat: 14.2789, lng: 121.4234, type: 'Flood Alert', severity: 'high', id: 'INC-0846', color: '#ea580c' },
+            { lat: 14.2123, lng: 121.5012, type: 'Medical Emergency', severity: 'critical', id: 'INC-0845', color: '#dc2626' },
+            { lat: 14.2567, lng: 121.4456, type: 'Road Accident', severity: 'medium', id: 'INC-0844', color: '#ca8a04' },
+            { lat: 14.2890, lng: 121.4890, type: 'Crime Report', severity: 'high', id: 'INC-0843', color: '#ea580c' }
+        ];
+
+        // Available units data
+        const availableUnits = [
+            { lat: 14.2356, lng: 121.4647, name: 'BFP-05', type: 'Fire Truck', agency: 'bfp' },
+            { lat: 14.2556, lng: 121.4547, name: 'BFP-12', type: 'Fire Truck', agency: 'bfp' },
+            { lat: 14.2689, lng: 121.4334, name: 'A-102', type: 'Ambulance', agency: 'doh' },
+            { lat: 14.2223, lng: 121.4912, name: 'A-108', type: 'Ambulance', agency: 'doh' },
+            { lat: 14.2445, lng: 121.4823, name: 'P-203', type: 'Patrol Car', agency: 'pnp' },
+            { lat: 14.2678, lng: 121.4567, name: 'P-210', type: 'Patrol Car', agency: 'pnp' },
+            { lat: 14.2834, lng: 121.4712, name: 'MDRRMO-03', type: 'Response Team', agency: 'mdrrmo' }
+        ];
+
+        // Deployed units data
+        const deployedUnits = [
+            { lat: 14.2200, lng: 121.5000, name: 'A-105', type: 'Ambulance', target: 'INC-0845', agency: 'doh' },
+            { lat: 14.2500, lng: 121.4500, name: 'BFP-08', type: 'Fire Truck', target: 'INC-0847', agency: 'bfp' },
+            { lat: 14.2750, lng: 121.4300, name: 'P-205', type: 'Patrol Car', target: 'INC-0846', agency: 'pnp' }
+        ];
+
+        // Add incident markers
+        function renderIncidents() {
+            incidentsLayer.clearLayers();
+            incidents.forEach(incident => {
+                const marker = L.circleMarker([incident.lat, incident.lng], {
+                    radius: 12,
+                    fillColor: incident.color,
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).bindPopup(`
+                    <div class="p-2">
+                        <p class="font-bold text-slate-900">${incident.type}</p>
+                        <p class="text-sm text-slate-600">${incident.id}</p>
+                        <p class="text-xs text-slate-500 mt-1">Severity: ${incident.severity}</p>
+                        <button onclick="deployToIncident('${incident.id}')" class="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
+                            Deploy Units
+                        </button>
+                    </div>
+                `);
+                incidentsLayer.addLayer(marker);
+            });
+        }
+
+        // Add available unit markers
+        function renderAvailableUnits() {
+            availableUnitsLayer.clearLayers();
+            availableUnits.forEach(unit => {
+                const icon = L.divIcon({
+                    html: `<div style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; white-space: nowrap;">${unit.name}</div>`,
+                    className: 'unit-marker',
+                    iconSize: [60, 30]
+                });
+
+                const marker = L.marker([unit.lat, unit.lng], { icon }).bindPopup(`
+                    <div class="p-2">
+                        <p class="font-bold text-slate-900">${unit.name}</p>
+                        <p class="text-sm text-slate-600">${unit.type}</p>
+                        <p class="text-xs text-green-600 mt-1">Status: Available</p>
+                    </div>
+                `);
+                availableUnitsLayer.addLayer(marker);
+            });
+        }
+
+        // Add deployed unit markers
+        function renderDeployedUnits() {
+            deployedUnitsLayer.clearLayers();
+            deployedUnits.forEach(unit => {
+                const icon = L.divIcon({
+                    html: `<div style="background: #2563eb; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; white-space: nowrap;">${unit.name}</div>`,
+                    className: 'unit-marker',
+                    iconSize: [60, 30]
+                });
+
+                const marker = L.marker([unit.lat, unit.lng], { icon }).bindPopup(`
+                    <div class="p-2">
+                        <p class="font-bold text-slate-900">${unit.name}</p>
+                        <p class="text-sm text-slate-600">${unit.type}</p>
+                        <p class="text-xs text-blue-600 mt-1">En route to ${unit.target}</p>
+                    </div>
+                `);
+                deployedUnitsLayer.addLayer(marker);
+            });
+        }
+
+        // Initial render
+        renderIncidents();
+        renderAvailableUnits();
+        renderDeployedUnits();
+
+        // Layer toggles
+        document.getElementById('showIncidents').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(incidentsLayer);
+            } else {
+                map.removeLayer(incidentsLayer);
+            }
+        });
+
+        document.getElementById('showAvailable').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(availableUnitsLayer);
+            } else {
+                map.removeLayer(availableUnitsLayer);
+            }
+        });
+
+        document.getElementById('showDeployed').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(deployedUnitsLayer);
+            } else {
+                map.removeLayer(deployedUnitsLayer);
+            }
+        });
+
+        // Proximity analysis
+        document.getElementById('proximityBtn').addEventListener('click', function() {
+            // Find nearest units to each incident
+            incidents.forEach(incident => {
+                const distances = availableUnits.map(unit => {
+                    const distance = map.distance([incident.lat, incident.lng], [unit.lat, unit.lng]);
+                    return { unit, distance };
+                }).sort((a, b) => a.distance - b.distance);
+
+                const nearest = distances[0];
+                const distanceKm = (nearest.distance / 1000).toFixed(2);
+
+                // Draw line to nearest unit
+                L.polyline([
+                    [incident.lat, incident.lng],
+                    [nearest.unit.lat, nearest.unit.lng]
+                ], {
+                    color: '#3b82f6',
+                    weight: 2,
+                    opacity: 0.6,
+                    dashArray: '5, 10'
+                }).addTo(map).bindPopup(`
+                    <div class="p-2">
+                        <p class="font-bold text-slate-900">Nearest Unit</p>
+                        <p class="text-sm text-slate-600">${nearest.unit.name} → ${incident.id}</p>
+                        <p class="text-xs text-slate-500 mt-1">Distance: ${distanceKm} km</p>
+                    </div>
+                `);
+            });
+        });
+
+        function deployToIncident(incidentId) {
+            window.location.href = `deploy.html?incident=${incidentId}`;
+        }
+
+        // Notifications
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationsPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        // Close notifications when clicking outside
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('notificationsPanel');
+            const button = e.target.closest('button[onclick="toggleNotifications()"]');
+            if (!panel.contains(e.target) && !button) {
+                panel.classList.add('hidden');
+            }
+        });
+
+        // Logout
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html>

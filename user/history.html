@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report History - RES-Q LAGUNA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .mesh-status {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+        
+        .report-card {
+            transition: all 0.3s ease;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filter-chip {
+            transition: all 0.2s ease;
+        }
+        
+        .filter-chip.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <button id="menuToggle" class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold text-gray-900">Report History</h1>
+                            <p class="text-xs text-gray-500">Track your submissions</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <!-- Mesh Status Indicator -->
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full">
+                        <div id="meshStatus" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
+                        <span id="meshStatusText" class="text-xs font-medium text-gray-700">Connected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+            <!-- Sidebar Header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                <div class="flex items-center gap-3">
+                    <img id="sidebarUserImage" src="/placeholder.svg?height=40&width=40" alt="User" class="w-10 h-10 rounded-full">
+                    <div>
+                        <p id="sidebarUserName" class="font-medium text-gray-900">Juan Dela Cruz</p>
+                        <p id="sidebarUserEmail" class="text-xs text-gray-500">juan.delacruz@gmail.com</p>
+                    </div>
+                </div>
+                <button id="closeSidebar" class="p-1 text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="flex-1 px-4 py-6 space-y-2">
+                <a href="home.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-home text-gray-600 w-5"></i>
+                    <span>Home</span>
+                </a>
+                <a href="alerts.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-bell text-gray-600 w-5"></i>
+                    <span>Alerts & Notifications</span>
+                </a>
+                <a href="report.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-plus-circle text-gray-600 w-5"></i>
+                    <span>Report Incident</span>
+                </a>
+                <a href="profile.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-user text-gray-600 w-5"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="history.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 bg-blue-50 rounded-lg">
+                    <i class="fas fa-history text-blue-600 w-5"></i>
+                    <span class="font-medium">Report History</span>
+                </a>
+                <a href="resources.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-info-circle text-gray-600 w-5"></i>
+                    <span>Emergency Resources</span>
+                </a>
+            </div>
+            
+            <!-- Sidebar Footer -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg mb-3">
+                    <div id="meshStatusSidebar" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
+                    <span class="text-xs font-medium text-gray-700">Mesh: Connected</span>
+                </div>
+                <button class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24">
+        <!-- Stats Summary -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900 mb-1">12</div>
+                <div class="text-xs text-gray-600">Total Reports</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+                <div class="text-2xl font-bold text-green-600 mb-1">8</div>
+                <div class="text-xs text-gray-600">Resolved</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+                <div class="text-2xl font-bold text-yellow-600 mb-1">2</div>
+                <div class="text-xs text-gray-600">In Progress</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+                <div class="text-2xl font-bold text-blue-600 mb-1">2</div>
+                <div class="text-xs text-gray-600">Pending</div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-2">Filter Reports</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-chip active px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-full transition-all" data-filter="all">
+                            All Reports
+                        </button>
+                        <button class="filter-chip px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-200 transition-all" data-filter="resolved">
+                            Resolved
+                        </button>
+                        <button class="filter-chip px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-200 transition-all" data-filter="progress">
+                            In Progress
+                        </button>
+                        <button class="filter-chip px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-200 transition-all" data-filter="pending">
+                            Pending
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Search reports..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Timeline -->
+        <div class="space-y-4">
+            <!-- Month Header -->
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
+                <h3 class="font-semibold text-gray-900">December 2024</h3>
+            </div>
+
+            <!-- Report Card - Resolved -->
+            <div class="report-card bg-white rounded-lg shadow-sm overflow-hidden border-l-4 border-green-500" data-status="resolved">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-sm font-semibold text-gray-900">#12348</span>
+                                <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">RESOLVED</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Submitted Dec 15, 2024 • 10:23 AM</p>
+                        </div>
+                        <button class="text-blue-600 hover:text-blue-700">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-car-crash text-blue-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">Vehicle Accident - National Highway</h3>
+                            <p class="text-sm text-gray-600 mb-2">Two-car collision blocking the right lane. No injuries reported but traffic building up.</p>
+                            <div class="flex flex-wrap gap-4 text-xs text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    National Highway, Brgy. San Pablo
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-clock"></i>
+                                    Response: 12 minutes
+                                </span>
+                                <span>Handled by PNP</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-star mr-1"></i>Rate Response
+                        </button>
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Card - In Progress -->
+            <div class="report-card bg-white rounded-lg shadow-sm overflow-hidden border-l-4 border-blue-500" data-status="progress">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-sm font-semibold text-gray-900">#12347</span>
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded">IN PROGRESS</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Submitted Dec 12, 2024 • 3:45 PM</p>
+                        </div>
+                        <button class="text-blue-600 hover:text-blue-700">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-bolt text-yellow-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">Power Line Damage</h3>
+                            <p class="text-sm text-gray-600 mb-2">Fallen power lines after storm. Area cordoned off for safety.</p>
+                            <div class="flex flex-wrap gap-4 text-xs text-gray-500 mb-2">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    M.L. Quezon Street, Brgy. Poblacion
+                                </span>
+                                <span>Assigned to MERALCO</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs">
+                                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                                    <div class="bg-blue-600 h-1.5 rounded-full" style="width: 75%"></div>
+                                </div>
+                                <span class="text-gray-600">ETA: 2 hours</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                        <i class="fas fa-sync-alt mr-1"></i>Track Response
+                    </button>
+                </div>
+            </div>
+
+            <!-- Month Header -->
+            <div class="flex items-center gap-3 mb-2 mt-6">
+                <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
+                <h3 class="font-semibold text-gray-900">November 2024</h3>
+            </div>
+
+            <!-- Report Card - Resolved -->
+            <div class="report-card bg-white rounded-lg shadow-sm overflow-hidden border-l-4 border-green-500" data-status="resolved">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-sm font-semibold text-gray-900">#12346</span>
+                                <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">RESOLVED</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Submitted Nov 28, 2024 • 8:15 AM</p>
+                        </div>
+                        <button class="text-blue-600 hover:text-blue-700">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-fire text-red-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">Fire Hazard - Electrical</h3>
+                            <p class="text-sm text-gray-600 mb-2">Electrical panel smoking in residential building. Residents evacuated safely.</p>
+                            <div class="flex flex-wrap gap-4 text-xs text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Luna Street, Brgy. Duhat
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-clock"></i>
+                                    Response: 8 minutes
+                                </span>
+                                <span>Handled by BFP</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-star mr-1"></i>Rate Response
+                        </button>
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Card - Resolved -->
+            <div class="report-card bg-white rounded-lg shadow-sm overflow-hidden border-l-4 border-green-500" data-status="resolved">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-sm font-semibold text-gray-900">#12345</span>
+                                <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">RESOLVED</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Submitted Nov 15, 2024 • 2:30 PM</p>
+                        </div>
+                        <button class="text-blue-600 hover:text-blue-700">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-water text-blue-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">Flooding - Rizal Street</h3>
+                            <p class="text-sm text-gray-600 mb-2">Heavy flooding blocking the main road. Water level approximately 1 foot high.</p>
+                            <div class="flex flex-wrap gap-4 text-xs text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Rizal Street, Brgy. San Pablo
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-clock"></i>
+                                    Response: 15 minutes
+                                </span>
+                                <span>Handled by BFP</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-star mr-1"></i>Rate Response
+                        </button>
+                        <button class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Card - Pending -->
+            <div class="report-card bg-white rounded-lg shadow-sm overflow-hidden border-l-4 border-yellow-500" data-status="pending">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-sm font-semibold text-gray-900">#12344</span>
+                                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">PENDING</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Submitted Nov 10, 2024 • 11:20 AM</p>
+                        </div>
+                        <button class="text-blue-600 hover:text-blue-700">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-heartbeat text-green-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 mb-1">Medical Emergency</h3>
+                            <p class="text-sm text-gray-600 mb-2">Elderly person experiencing chest pain and difficulty breathing.</p>
+                            <div class="flex flex-wrap gap-4 text-xs text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Maharlika Highway, Brgy. Poblacion
+                                </span>
+                                <span>Under review</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-8">
+            <button class="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm">
+                <i class="fas fa-arrow-down mr-2"></i>Load More Reports
+            </button>
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="emptyState" class="hidden bg-white rounded-lg shadow-sm p-12 text-center">
+            <i class="fas fa-file-alt text-gray-400 text-4xl mx-auto mb-4"></i>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No reports found</h3>
+            <p class="text-sm text-gray-600 mb-4">You haven't submitted any reports yet or no reports match your filters.</p>
+            <a href="report.html" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                <i class="fas fa-plus"></i>
+                Submit Your First Report
+            </a>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-40">
+        <div class="flex justify-around items-center h-16">
+            <a href="home.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs">Home</span>
+            </a>
+            <a href="alerts.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-bell text-lg"></i>
+                <span class="text-xs">Alerts</span>
+            </a>
+            <a href="report.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <div class="w-12 h-12 -mt-6 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg">
+                    <i class="fas fa-plus text-white text-lg"></i>
+                </div>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-user text-lg"></i>
+                <span class="text-xs">Profile</span>
+            </a>
+            <button id="mobileMenuToggle" class="flex flex-col items-center gap-1 text-blue-600">
+                <i class="fas fa-history text-lg"></i>
+                <span class="text-xs font-medium">History</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+        }
+        
+        function closeSidebarFunc() {
+            sidebar.classList.add('-translate-x-full');
+        }
+        
+        menuToggle.addEventListener('click', openSidebar);
+        mobileMenuToggle.addEventListener('click', openSidebar);
+        closeSidebar.addEventListener('click', closeSidebarFunc);
+        
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (event) => {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnMenuToggle = menuToggle.contains(event.target) || mobileMenuToggle.contains(event.target);
+            
+            if (!isClickInsideSidebar && !isClickOnMenuToggle && !sidebar.classList.contains('-translate-x-full')) {
+                closeSidebarFunc();
+            }
+        });
+
+        // Filter functionality
+        const filterChips = document.querySelectorAll('.filter-chip');
+        const reportCards = document.querySelectorAll('.report-card');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.querySelector('input[type="text"]');
+
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', function() {
+                // Update active filter
+                filterChips.forEach(c => c.classList.remove('active', 'bg-blue-600', 'text-white'));
+                this.classList.add('active', 'bg-blue-600', 'text-white');
+                this.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+
+                const filter = this.dataset.filter;
+                let visibleCount = 0;
+
+                // Filter reports
+                reportCards.forEach(card => {
+                    if (filter === 'all' || card.dataset.status === filter) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show empty state if no reports match
+                if (visibleCount === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+            });
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            let visibleCount = 0;
+
+            reportCards.forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                if (cardText.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show empty state if no reports match
+            if (visibleCount === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+        });
+
+        // Mesh status simulation
+        function updateMeshStatus() {
+            const statuses = [
+                { color: 'bg-green-500', text: 'Connected', class: 'mesh-status' },
+                { color: 'bg-yellow-500', text: 'Searching', class: 'mesh-status' },
+                { color: 'bg-red-500', text: 'Offline', class: '' }
+            ];
+            
+            const status = statuses[0]; // Default to connected
+            
+            document.getElementById('meshStatus').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
+            document.getElementById('meshStatusText').textContent = status.text;
+            document.getElementById('meshStatusSidebar').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
+        }
+
+        // Initialize
+        updateMeshStatus();
+        setInterval(updateMeshStatus, 5000);
+    </script>
+</body>
+</html>

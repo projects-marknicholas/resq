@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Analytics - RES-Q LAGUNA Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50">
+     <!-- Sidebar  -->
+    <div class="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-slate-200 z-40">
+        <div class="p-6 border-b border-slate-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-red-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-slate-900">RES-Q LAGUNA</h1>
+                    <p class="text-xs text-slate-500">Admin Portal</p>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="reports.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Reports
+            </a>
+            <a href="assign-dispatch.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Assign & Dispatch
+            </a>
+            <a href="prediction.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Prediction
+            </a>
+            <a href="resources.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                Resources
+            </a>
+            <a href="broadcast.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                </svg>
+                Broadcast Alert
+            </a>
+            <a href="feedback.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                </svg>
+                User Feedback
+            </a>
+        </nav>
+    </div>
+
+     <!-- Main Content  -->
+    <div class="ml-64">
+         <!-- Top Navigation  -->
+        <div class="bg-white border-b border-slate-200 sticky top-0 z-30">
+            <div class="flex items-center justify-between px-8 py-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">Prediction Analytics</h1>
+                    <p class="text-sm text-slate-500">AI-powered incident prediction and risk assessment</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleNotifications()" class="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-600 rounded-full"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-slate-900" id="userName">Admin User</p>
+                            <p class="text-xs text-slate-500">Administrator</p>
+                        </div>
+                        <button onclick="logout()" class="w-10 h-10 bg-gradient-to-br from-blue-600 to-red-600 rounded-lg flex items-center justify-center text-white font-semibold">
+                            A
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <!-- Content  -->
+        <div class="p-8">
+             <!-- Time Period Selector  -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-slate-900">Prediction Period</h2>
+                    <div class="flex items-center gap-2">
+                        <button onclick="setPeriod('today')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">Today</button>
+                        <button onclick="setPeriod('tomorrow')" class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-sm font-medium transition">Tomorrow</button>
+                        <button onclick="setPeriod('week')" class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-sm font-medium transition">This Week</button>
+                    </div>
+                </div>
+            </div>
+
+             <!-- High Risk Barangays  -->
+            <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                 <!-- Today's Predictions  -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4">High Risk Barangays - Today</h3>
+                    <div class="space-y-3">
+                        <div class="p-4 border-l-4 border-red-600 bg-red-50 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-slate-900">Brgy. Riverside</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-red-600 text-white rounded">Critical</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2">High flood risk due to heavy rainfall forecast</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span>Risk Score: 92%</span>
+                                <span>•</span>
+                                <span>Incident Type: Flood</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-l-4 border-orange-600 bg-orange-50 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-slate-900">Brgy. San Jose</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-orange-600 text-white rounded">High</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2">Elevated fire risk in residential areas</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span>Risk Score: 78%</span>
+                                <span>•</span>
+                                <span>Incident Type: Fire</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-l-4 border-yellow-600 bg-yellow-50 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-slate-900">Brgy. Poblacion</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-yellow-600 text-white rounded">Medium</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2">Moderate traffic accident risk during peak hours</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span>Risk Score: 65%</span>
+                                <span>•</span>
+                                <span>Incident Type: Accident</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-l-4 border-yellow-600 bg-yellow-50 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-slate-900">Brgy. Maligaya</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-yellow-600 text-white rounded">Medium</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2">Medical emergency likelihood increased</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span>Risk Score: 58%</span>
+                                <span>•</span>
+                                <span>Incident Type: Medical</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Tomorrow's Predictions  -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4">High Risk Barangays - Tomorrow</h3>
+                    <div class="space-y-3">
+                        <div class="p-4 border-l-4 border-red-600 bg-red-50 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-slate-900">Brgy. Bagong Silang</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-red-600 text-white rounded">Critical</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2">Severe flood warning - low-lying area</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span>Risk Score: 88%</span>
+                                <span>•</span>
+                                <span>Incident Type: Flood</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-l-4 border-orange-600 bg-orange-50 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-slate-900">Brgy. Centro</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-orange-600 text-white rounded">High</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2">Fire risk elevated due to dry conditions</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span>Risk Score: 72%</span>
+                                <span>•</span>
+                                <span>Incident Type: Fire</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-l-4 border-yellow-600 bg-yellow-50 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-slate-900">Brgy. Pag-asa</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-yellow-600 text-white rounded">Medium</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2">Landslide risk in hilly areas</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span>Risk Score: 61%</span>
+                                <span>•</span>
+                                <span>Incident Type: Landslide</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-l-4 border-blue-600 bg-blue-50 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-slate-900">Brgy. Kaligayahan</h4>
+                                <span class="px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded">Low</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2">Normal conditions expected</p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span>Risk Score: 32%</span>
+                                <span>•</span>
+                                <span>Incident Type: General</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Risk Map  -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+                <h3 class="text-lg font-semibold text-slate-900 mb-4">Risk Heat Map</h3>
+                <div id="riskMap" class="w-full h-96 rounded-lg"></div>
+            </div>
+
+             <!-- Prediction Analytics  -->
+            <div class="grid lg:grid-cols-2 gap-6">
+                 <!-- Risk Factors  -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4">Contributing Risk Factors</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-slate-700">Weather Conditions</span>
+                                <span class="text-sm font-bold text-red-600">High Impact</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-red-600 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-slate-700">Historical Patterns</span>
+                                <span class="text-sm font-bold text-orange-600">Medium Impact</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-orange-600 h-2 rounded-full" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-slate-700">Population Density</span>
+                                <span class="text-sm font-bold text-yellow-600">Medium Impact</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-yellow-600 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-slate-700">Infrastructure Age</span>
+                                <span class="text-sm font-bold text-blue-600">Low Impact</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-slate-700">Time of Day</span>
+                                <span class="text-sm font-bold text-blue-600">Low Impact</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 38%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Prediction Accuracy  -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-4">Model Performance</h3>
+                    <canvas id="accuracyChart" class="w-full" height="200"></canvas>
+                    <div class="grid grid-cols-3 gap-4 mt-6">
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <p class="text-2xl font-bold text-green-900">94.2%</p>
+                            <p class="text-xs text-green-700 mt-1">Accuracy</p>
+                        </div>
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <p class="text-2xl font-bold text-blue-900">91.8%</p>
+                            <p class="text-xs text-blue-700 mt-1">Precision</p>
+                        </div>
+                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                            <p class="text-2xl font-bold text-purple-900">89.5%</p>
+                            <p class="text-xs text-purple-700 mt-1">Recall</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize risk map
+        const riskMap = L.map('riskMap').setView([14.2691, 121.4113], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(riskMap);
+
+        // Add risk zones
+        const riskZones = [
+            { lat: 14.2691, lng: 121.4113, risk: 'high', name: 'Brgy. San Jose' },
+            { lat: 14.1091, lng: 121.1619, risk: 'critical', name: 'Brgy. Riverside' },
+            { lat: 14.4167, lng: 121.4333, risk: 'medium', name: 'Brgy. Poblacion' },
+            { lat: 14.3500, lng: 121.4667, risk: 'medium', name: 'Brgy. Maligaya' }
+        ];
+
+        riskZones.forEach(zone => {
+            const color = zone.risk === 'critical' ? '#dc2626' : zone.risk === 'high' ? '#ea580c' : '#eab308';
+            const radius = zone.risk === 'critical' ? 1500 : zone.risk === 'high' ? 1200 : 800;
+            
+            L.circle([zone.lat, zone.lng], {
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.3,
+                radius: radius
+            }).addTo(riskMap).bindPopup(`<b>${zone.name}</b><br>Risk Level: ${zone.risk}`);
+        });
+
+        // Initialize accuracy chart
+        const ctx = document.getElementById('accuracyChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Prediction Accuracy',
+                    data: [89, 91, 92, 93, 94, 94.2],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 85,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        function setPeriod(period) {
+            console.log('Setting period:', period);
+            // Update UI based on selected period
+        }
+
+        function toggleNotifications() {
+            alert('Notifications panel');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts & Notifications - RES-Q LAGUNA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .mesh-status {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+        
+        .alert-item {
+            transition: all 0.3s ease;
+        }
+        
+        .alert-item:hover {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <button id="menuToggle" class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold text-gray-900">Notifications</h1>
+                            <p class="text-xs text-gray-500">Stay informed</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <!-- Mesh Status Indicator -->
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full">
+                        <div id="meshStatus" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
+                        <span id="meshStatusText" class="text-xs font-medium text-gray-700">Connected</span>
+                    </div>
+                    
+                    <button id="markAllReadBtn" class="text-sm font-medium text-blue-600 hover:text-blue-700">
+                        Mark all as read
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+            <!-- Sidebar Header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                <div class="flex items-center gap-3">
+                    <img src="/placeholder.svg?height=40&width=40" alt="User" class="w-10 h-10 rounded-full">
+                    <div>
+                        <p class="font-medium text-gray-900">Juan Dela Cruz</p>
+                        <p class="text-xs text-gray-500">Verified Citizen</p>
+                    </div>
+                </div>
+                <button id="closeSidebar" class="p-1 text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="flex-1 px-4 py-6 space-y-2">
+                <a href="home.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-home text-gray-600 w-5"></i>
+                    <span>Home</span>
+                </a>
+                <a href="alerts.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 bg-blue-50 rounded-lg">
+                    <i class="fas fa-bell text-blue-600 w-5"></i>
+                    <span class="font-medium">Alerts & Notifications</span>
+                </a>
+                <a href="report.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-plus-circle text-gray-600 w-5"></i>
+                    <span>Report Incident</span>
+                </a>
+                <a href="profile.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-user text-gray-600 w-5"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="history.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-history text-gray-600 w-5"></i>
+                    <span>Report History</span>
+                </a>
+                <a href="resources.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-info-circle text-gray-600 w-5"></i>
+                    <span>Emergency Resources</span>
+                </a>
+            </div>
+            
+            <!-- Sidebar Footer -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg mb-3">
+                    <div id="meshStatusSidebar" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
+                    <span class="text-xs font-medium text-gray-700">Mesh: Connected</span>
+                </div>
+                <button class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24">
+        <!-- Filter Tabs -->
+        <div class="bg-white rounded-lg shadow-sm p-2 mb-6 flex gap-2 overflow-x-auto">
+            <button class="tab-button px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-blue-600 text-white" data-filter="all">
+                All
+            </button>
+            <button class="tab-button px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200" data-filter="disaster">
+                Disaster Alerts
+            </button>
+            <button class="tab-button px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200" data-filter="report">
+                My Reports
+            </button>
+            <button class="tab-button px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200" data-filter="system">
+                System
+            </button>
+        </div>
+
+        <!-- Notifications List -->
+        <div id="notificationsList" class="space-y-3">
+            <!-- Critical Disaster Alert -->
+            <div class="alert-item bg-white border-l-4 border-red-600 rounded-lg shadow-sm overflow-hidden" data-type="disaster" data-read="false">
+                <div class="p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-semibold rounded">CRITICAL</span>
+                                <span class="text-xs text-gray-500">2 hours ago</span>
+                                <div class="w-2 h-2 bg-blue-600 rounded-full ml-auto"></div>
+                            </div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Flood Warning - Barangay San Pablo</h3>
+                            <p class="text-sm text-gray-600 mb-2">Heavy rainfall has caused flooding in low-lying areas. Residents are advised to evacuate to designated safe zones immediately.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Barangay San Pablo
+                                </span>
+                                <span>Sent via SMS & Push</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Status Update -->
+            <div class="alert-item bg-white border-l-4 border-green-600 rounded-lg shadow-sm overflow-hidden" data-type="report" data-read="false">
+                <div class="p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">RESOLVED</span>
+                                <span class="text-xs text-gray-500">3 hours ago</span>
+                                <div class="w-2 h-2 bg-blue-600 rounded-full ml-auto"></div>
+                            </div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Your Report #12345 has been resolved</h3>
+                            <p class="text-sm text-gray-600 mb-2">The flood incident you reported on Rizal Street has been addressed. BFP responded in 15 minutes. Thank you for your report!</p>
+                            <button class="text-sm font-medium text-blue-600 hover:text-blue-700">Rate Response</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Warning Alert -->
+            <div class="alert-item bg-white border-l-4 border-yellow-500 rounded-lg shadow-sm overflow-hidden" data-type="disaster" data-read="true">
+                <div class="p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-bolt text-yellow-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">WARNING</span>
+                                <span class="text-xs text-gray-500">5 hours ago</span>
+                            </div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Power Outage - Multiple Barangays</h3>
+                            <p class="text-sm text-gray-600 mb-2">Scheduled maintenance will cause power interruption from 10 PM to 2 AM. Please prepare accordingly.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Municipality-wide
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report In Progress -->
+            <div class="alert-item bg-white border-l-4 border-blue-600 rounded-lg shadow-sm overflow-hidden" data-type="report" data-read="true">
+                <div class="p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-blue-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded">IN PROGRESS</span>
+                                <span class="text-xs text-gray-500">1 day ago</span>
+                            </div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Your Report #12344 is being handled</h3>
+                            <p class="text-sm text-gray-600 mb-2">DOH has been dispatched to the medical emergency you reported. ETA: 8 minutes.</p>
+                            <button class="text-sm font-medium text-blue-600 hover:text-blue-700">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Alert -->
+            <div class="alert-item bg-white border-l-4 border-blue-600 rounded-lg shadow-sm overflow-hidden" data-type="disaster" data-read="true">
+                <div class="p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-info-circle text-blue-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded">INFO</span>
+                                <span class="text-xs text-gray-500">1 day ago</span>
+                            </div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Community Health Drive</h3>
+                            <p class="text-sm text-gray-600">Free medical check-up and vaccination program at Barangay Hall this Saturday, 8 AM - 4 PM.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Notification -->
+            <div class="alert-item bg-white border-l-4 border-gray-400 rounded-lg shadow-sm overflow-hidden" data-type="system" data-read="true">
+                <div class="p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-cog text-gray-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded">SYSTEM</span>
+                                <span class="text-xs text-gray-500">2 days ago</span>
+                            </div>
+                            <h3 class="font-semibold text-gray-900 mb-1">App Update Available</h3>
+                            <p class="text-sm text-gray-600 mb-2">Version 2.1.0 is now available with improved offline mode and faster report submission.</p>
+                            <button class="text-sm font-medium text-blue-600 hover:text-blue-700">Update Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Received -->
+            <div class="alert-item bg-white border-l-4 border-gray-400 rounded-lg shadow-sm overflow-hidden" data-type="report" data-read="true">
+                <div class="p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-file-alt text-gray-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded">RECEIVED</span>
+                                <span class="text-xs text-gray-500">2 days ago</span>
+                            </div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Report #12343 received</h3>
+                            <p class="text-sm text-gray-600">Your fire incident report has been received and is being reviewed by our team.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="emptyState" class="hidden bg-white rounded-lg shadow-sm p-12 text-center">
+            <i class="fas fa-bell-slash text-gray-400 text-4xl mx-auto mb-4"></i>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No notifications</h3>
+            <p class="text-sm text-gray-600">You're all caught up! Check back later for updates.</p>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-40">
+        <div class="flex justify-around items-center h-16">
+            <a href="home.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs">Home</span>
+            </a>
+            <a href="alerts.html" class="flex flex-col items-center gap-1 text-blue-600">
+                <i class="fas fa-bell text-lg"></i>
+                <span class="text-xs font-medium">Alerts</span>
+            </a>
+            <a href="report.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <div class="w-12 h-12 -mt-6 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg">
+                    <i class="fas fa-plus text-white text-lg"></i>
+                </div>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-user text-lg"></i>
+                <span class="text-xs">Profile</span>
+            </a>
+            <button id="mobileMenuToggle" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-bars text-lg"></i>
+                <span class="text-xs">Menu</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        const notificationsList = document.getElementById('notificationsList');
+        const emptyState = document.getElementById('emptyState');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const markAllReadBtn = document.getElementById('markAllReadBtn');
+
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+        }
+        
+        function closeSidebarFunc() {
+            sidebar.classList.add('-translate-x-full');
+        }
+        
+        menuToggle.addEventListener('click', openSidebar);
+        mobileMenuToggle.addEventListener('click', openSidebar);
+        closeSidebar.addEventListener('click', closeSidebarFunc);
+        
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (event) => {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnMenuToggle = menuToggle.contains(event.target) || mobileMenuToggle.contains(event.target);
+            
+            if (!isClickInsideSidebar && !isClickOnMenuToggle && !sidebar.classList.contains('-translate-x-full')) {
+                closeSidebarFunc();
+            }
+        });
+
+        // Filter notifications
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active tab
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                });
+                this.classList.add('bg-blue-600', 'text-white');
+                this.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+
+                // Filter notifications
+                const filter = this.dataset.filter;
+                const alerts = document.querySelectorAll('.alert-item');
+                let visibleCount = 0;
+
+                alerts.forEach(alert => {
+                    if (filter === 'all' || alert.dataset.type === filter) {
+                        alert.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        alert.style.display = 'none';
+                    }
+                });
+
+                // Show empty state if no notifications
+                if (visibleCount === 0) {
+                    notificationsList.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                } else {
+                    notificationsList.classList.remove('hidden');
+                    emptyState.classList.add('hidden');
+                }
+            });
+        });
+
+        // Mark all as read
+        markAllReadBtn.addEventListener('click', function() {
+            const unreadIndicators = document.querySelectorAll('.alert-item[data-read="false"] .bg-blue-600');
+            unreadIndicators.forEach(indicator => {
+                indicator.style.display = 'none';
+            });
+            
+            document.querySelectorAll('.alert-item[data-read="false"]').forEach(alert => {
+                alert.dataset.read = 'true';
+            });
+        });
+
+        // Mark individual notification as read when clicked
+        document.querySelectorAll('.alert-item').forEach(alert => {
+            alert.addEventListener('click', function() {
+                const unreadIndicator = this.querySelector('.bg-blue-600');
+                if (unreadIndicator) {
+                    unreadIndicator.style.display = 'none';
+                    this.dataset.read = 'true';
+                }
+            });
+        });
+
+        // Mesh status simulation
+        function updateMeshStatus() {
+            const statuses = [
+                { color: 'bg-green-500', text: 'Connected', class: 'mesh-status' },
+                { color: 'bg-yellow-500', text: 'Searching', class: 'mesh-status' },
+                { color: 'bg-red-500', text: 'Offline', class: '' }
+            ];
+            
+            const status = statuses[0]; // Default to connected
+            
+            document.getElementById('meshStatus').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
+            document.getElementById('meshStatusText').textContent = status.text;
+            document.getElementById('meshStatusSidebar').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
+        }
+
+        // Initialize
+        updateMeshStatus();
+        setInterval(updateMeshStatus, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Resources - RES-Q LAGUNA Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        
+        .notification-badge {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-slate-200 z-40">
+        <div class="p-6 border-b border-slate-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-red-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-slate-900">RES-Q LAGUNA</h1>
+                    <p class="text-xs text-slate-500">Dispatcher Portal</p>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="incidents.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Active Incidents
+            </a>
+            <a href="deploy.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Deploy Resources
+            </a>
+            <a href="tracker.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Resource Tracker
+            </a>
+            <a href="../index.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Top Navigation -->
+        <div class="bg-white border-b border-slate-200 sticky top-0 z-30">
+            <div class="flex items-center justify-between px-8 py-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900">Deploy Resources</h1>
+                    <p class="text-sm text-slate-500">Assign and dispatch emergency response units to incidents</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleNotifications()" class="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-600 rounded-full notification-badge"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-slate-900" id="userName">Dispatcher User</p>
+                            <p class="text-xs text-slate-500">Dispatcher</p>
+                        </div>
+                        <button onclick="logout()" class="w-10 h-10 bg-gradient-to-br from-blue-600 to-red-600 rounded-lg flex items-center justify-center text-white font-semibold">
+                            D
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column - Incident Details -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Incident Information -->
+                    <div class="bg-white rounded-xl border border-slate-200">
+                        <div class="p-6 border-b border-slate-200">
+                            <h3 class="text-lg font-semibold text-slate-900">Incident Details</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-start gap-4 mb-6">
+                                <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <h4 class="text-xl font-bold text-slate-900">Fire Emergency</h4>
+                                        <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded">Critical</span>
+                                    </div>
+                                    <p class="text-slate-600 mb-3">Residential fire reported at Brgy. San Antonio, Biñan City</p>
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <p class="text-slate-500">Incident ID</p>
+                                            <p class="font-medium text-slate-900">INC-2024-0847</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500">Reported By</p>
+                                            <p class="font-medium text-slate-900">Juan Dela Cruz</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500">Time Reported</p>
+                                            <p class="font-medium text-slate-900">5 minutes ago</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500">Contact</p>
+                                            <p class="font-medium text-slate-900">+63 912 345 6789</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Location Map -->
+                            <div class="mb-4">
+                                <h5 class="text-sm font-semibold text-slate-900 mb-2">Incident Location</h5>
+                                <div id="incidentMap" class="h-64 rounded-lg border border-slate-200"></div>
+                                <p class="text-sm text-slate-600 mt-2 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    123 Main Street, Brgy. San Antonio, Biñan City, Laguna
+                                </p>
+                            </div>
+
+                            <!-- Description -->
+                            <div>
+                                <h5 class="text-sm font-semibold text-slate-900 mb-2">Description</h5>
+                                <p class="text-slate-700 bg-slate-50 p-4 rounded-lg">
+                                    Large fire observed in a two-story residential building. Smoke visible from several blocks away. 
+                                    Multiple families may be affected. Immediate response required.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deployment Form -->
+                    <div class="bg-white rounded-xl border border-slate-200">
+                        <div class="p-6 border-b border-slate-200">
+                            <h3 class="text-lg font-semibold text-slate-900">Deploy Units</h3>
+                        </div>
+                        <div class="p-6">
+                            <form id="deploymentForm" class="space-y-6">
+                                <!-- Agency Selection -->
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Primary Agency</label>
+                                    <select id="agencySelect" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                        <option value="">Select Agency</option>
+                                        <option value="bfp">Bureau of Fire Protection (BFP)</option>
+                                        <option value="doh">Department of Health (DOH)</option>
+                                        <option value="pnp">Philippine National Police (PNP)</option>
+                                        <option value="mdrrmo">MDRRMO</option>
+                                        <option value="lgu">Local Government Unit (LGU)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Unit Selection -->
+                                <div id="unitSelection" class="hidden">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Select Units (Multiple)</label>
+                                    <div class="space-y-2 max-h-48 overflow-y-auto border border-slate-200 rounded-lg p-3" id="unitsList">
+                                        <!-- Units will be populated based on agency selection -->
+                                    </div>
+                                </div>
+
+                                <!-- Priority Level -->
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Priority Level</label>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <label class="relative flex items-center justify-center p-3 border-2 border-red-300 rounded-lg cursor-pointer hover:bg-red-50 transition-colors">
+                                            <input type="radio" name="priority" value="critical" class="sr-only peer" checked>
+                                            <div class="text-center peer-checked:font-bold">
+                                                <svg class="w-6 h-6 text-red-600 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                <p class="text-sm text-red-700">Critical</p>
+                                            </div>
+                                        </label>
+                                        <label class="relative flex items-center justify-center p-3 border-2 border-slate-300 rounded-lg cursor-pointer hover:bg-orange-50 transition-colors">
+                                            <input type="radio" name="priority" value="high" class="sr-only peer">
+                                            <div class="text-center peer-checked:font-bold">
+                                                <svg class="w-6 h-6 text-orange-600 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                <p class="text-sm text-orange-700">High</p>
+                                            </div>
+                                        </label>
+                                        <label class="relative flex items-center justify-center p-3 border-2 border-slate-300 rounded-lg cursor-pointer hover:bg-yellow-50 transition-colors">
+                                            <input type="radio" name="priority" value="medium" class="sr-only peer">
+                                            <div class="text-center peer-checked:font-bold">
+                                                <svg class="w-6 h-6 text-yellow-600 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                <p class="text-sm text-yellow-700">Medium</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Dispatch Notes -->
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Dispatch Notes</label>
+                                    <textarea id="dispatchNotes" rows="4" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Add any special instructions or notes for the responding units..."></textarea>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="flex gap-3">
+                                    <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        Deploy Units
+                                    </button>
+                                    <button type="button" onclick="window.history.back()" class="px-6 py-3 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition-colors">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Available Units -->
+                <div class="space-y-6">
+                    <!-- Recommended Units -->
+                    <div class="bg-white rounded-xl border border-slate-200">
+                        <div class="p-6 border-b border-slate-200">
+                            <h3 class="text-lg font-semibold text-slate-900">Recommended Units</h3>
+                            <p class="text-sm text-slate-600">Based on proximity and availability</p>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-slate-900">BFP-05</p>
+                                        <p class="text-sm text-slate-600">Fire Truck</p>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded">Available</span>
+                                </div>
+                                <div class="space-y-1 text-sm text-slate-600">
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        1.2 km away
+                                    </p>
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        ETA: 4 minutes
+                                    </p>
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                        6 personnel
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-slate-900">BFP-12</p>
+                                        <p class="text-sm text-slate-600">Fire Truck</p>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded">Available</span>
+                                </div>
+                                <div class="space-y-1 text-sm text-slate-600">
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        2.8 km away
+                                    </p>
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        ETA: 7 minutes
+                                    </p>
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                        6 personnel
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <p class="font-semibold text-slate-900">A-102</p>
+                                        <p class="text-sm text-slate-600">Ambulance</p>
+                                    </div>
+                                    <span class="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded">Available</span>
+                                </div>
+                                <div class="space-y-1 text-sm text-slate-600">
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        1.9 km away
+                                    </p>
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        ETA: 5 minutes
+                                    </p>
+                                    <p class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                        3 personnel
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <h3 class="text-lg font-semibold text-slate-900 mb-4">Quick Stats</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Nearest Unit</span>
+                                <span class="text-sm font-semibold text-slate-900">1.2 km</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Fastest ETA</span>
+                                <span class="text-sm font-semibold text-slate-900">4 min</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Available Units</span>
+                                <span class="text-sm font-semibold text-slate-900">8 nearby</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-600">Incident Age</span>
+                                <span class="text-sm font-semibold text-red-600">5 min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deployment History -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-6">
+                        <h3 class="text-lg font-semibold text-slate-900 mb-4">Recent Deployments</h3>
+                        <div class="space-y-3">
+                            <div class="text-sm">
+                                <p class="font-medium text-slate-900">A-102 → Medical Emergency</p>
+                                <p class="text-slate-500">8 minutes ago</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="font-medium text-slate-900">P-203 → Road Accident</p>
+                                <p class="text-slate-500">15 minutes ago</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="font-medium text-slate-900">BFP-08 → Fire Alert</p>
+                                <p class="text-slate-500">32 minutes ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Panel -->
+    <div id="notificationsPanel" class="hidden fixed right-4 top-20 w-96 bg-white rounded-xl shadow-2xl border border-slate-200 z-50">
+        <div class="p-4 border-b border-slate-200">
+            <h3 class="font-semibold text-slate-900">Notifications</h3>
+        </div>
+        <div class="max-h-96 overflow-y-auto">
+            <div class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer">
+                <div class="flex items-start gap-3">
+                    <div class="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900">New fire incident reported</p>
+                        <p class="text-xs text-slate-500 mt-1">Barangay San Jose - 2 minutes ago</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer">
+                <div class="flex items-start gap-3">
+                    <div class="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900">Flood warning issued</p>
+                        <p class="text-xs text-slate-500 mt-1">Barangay Riverside - 15 minutes ago</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer">
+                <div class="flex items-start gap-3">
+                    <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900">Incident resolved</p>
+                        <p class="text-xs text-slate-500 mt-1">Barangay Centro - 1 hour ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize map
+        const map = L.map('incidentMap').setView([14.2456, 121.4747], 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add incident marker
+        const incidentIcon = L.divIcon({
+            html: '<div style="font-size: 32px;">🔥</div>',
+            className: 'custom-marker',
+            iconSize: [40, 40]
+        });
+
+        L.marker([14.2456, 121.4747], { icon: incidentIcon })
+            .bindPopup('<b>Fire Emergency</b><br>Brgy. San Antonio')
+            .addTo(map);
+
+        // Add available unit markers
+        const units = [
+            { lat: 14.2356, lng: 121.4647, name: 'BFP-05', distance: '1.2 km' },
+            { lat: 14.2556, lng: 121.4547, name: 'BFP-12', distance: '2.8 km' },
+            { lat: 14.2406, lng: 121.4697, name: 'A-102', distance: '1.9 km' }
+        ];
+
+        units.forEach(unit => {
+            const unitIcon = L.divIcon({
+                html: `<div style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold;">${unit.name}</div>`,
+                className: 'unit-marker',
+                iconSize: [60, 30]
+            });
+
+            L.marker([unit.lat, unit.lng], { icon: unitIcon })
+                .bindPopup(`<b>${unit.name}</b><br>${unit.distance} away`)
+                .addTo(map);
+        });
+
+        // Agency selection handler
+        const agencySelect = document.getElementById('agencySelect');
+        const unitSelection = document.getElementById('unitSelection');
+        const unitsList = document.getElementById('unitsList');
+
+        const agencyUnits = {
+            bfp: [
+                { id: 'BFP-05', name: 'BFP-05 Fire Truck', distance: '1.2 km', eta: '4 min', available: true },
+                { id: 'BFP-12', name: 'BFP-12 Fire Truck', distance: '2.8 km', eta: '7 min', available: true },
+                { id: 'BFP-08', name: 'BFP-08 Fire Truck', distance: '5.1 km', eta: '12 min', available: false }
+            ],
+            doh: [
+                { id: 'A-102', name: 'A-102 Ambulance', distance: '1.9 km', eta: '5 min', available: true },
+                { id: 'A-108', name: 'A-108 Ambulance', distance: '3.8 km', eta: '9 min', available: true }
+            ],
+            pnp: [
+                { id: 'P-203', name: 'P-203 Patrol Car', distance: '2.1 km', eta: '6 min', available: true },
+                { id: 'P-210', name: 'P-210 Patrol Car', distance: '4.2 km', eta: '10 min', available: true }
+            ],
+            mdrrmo: [
+                { id: 'MDRRMO-03', name: 'MDRRMO-03 Response Team', distance: '3.2 km', eta: '8 min', available: true }
+            ],
+            lgu: [
+                { id: 'LGU-01', name: 'LGU-01 Response Unit', distance: '2.5 km', eta: '7 min', available: true }
+            ]
+        };
+
+        agencySelect.addEventListener('change', function() {
+            const agency = this.value;
+            if (agency) {
+                unitSelection.classList.remove('hidden');
+                const units = agencyUnits[agency] || [];
+                
+                unitsList.innerHTML = units.map(unit => `
+                    <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer ${!unit.available ? 'opacity-50' : ''}">
+                        <input type="checkbox" name="units" value="${unit.id}" class="w-4 h-4 text-blue-600" ${!unit.available ? 'disabled' : ''}>
+                        <div class="flex-1">
+                            <p class="font-medium text-slate-900">${unit.name}</p>
+                            <p class="text-xs text-slate-600">${unit.distance} • ETA: ${unit.eta}</p>
+                        </div>
+                        <span class="px-2 py-1 ${unit.available ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'} text-xs font-medium rounded">
+                            ${unit.available ? 'Available' : 'Deployed'}
+                        </span>
+                    </label>
+                `).join('');
+            } else {
+                unitSelection.classList.add('hidden');
+            }
+        });
+
+        // Form submission
+        document.getElementById('deploymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const agency = agencySelect.value;
+            const selectedUnits = Array.from(document.querySelectorAll('input[name="units"]:checked')).map(cb => cb.value);
+            const priority = document.querySelector('input[name="priority"]:checked').value;
+            const notes = document.getElementById('dispatchNotes').value;
+
+            if (!agency || selectedUnits.length === 0) {
+                alert('Please select an agency and at least one unit');
+                return;
+            }
+
+            console.log('[v0] Deploying units:', { agency, selectedUnits, priority, notes });
+            
+            alert(`Successfully deployed ${selectedUnits.length} unit(s) to incident INC-2024-0847`);
+            window.location.href = 'dashboard.html';
+        });
+
+        // Notifications
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationsPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        // Close notifications when clicking outside
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('notificationsPanel');
+            const button = e.target.closest('button[onclick="toggleNotifications()"]');
+            if (!panel.contains(e.target) && !button) {
+                panel.classList.add('hidden');
+            }
+        });
+
+        // Logout
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Resources - RES-Q LAGUNA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .mesh-status {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+        
+        .resource-card {
+            transition: all 0.3s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .emergency-card {
+            transition: all 0.3s ease;
+        }
+        
+        .emergency-card:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <button id="menuToggle" class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold text-gray-900">Emergency Resources</h1>
+                            <p class="text-xs text-gray-500">Help when you need it</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <!-- Mesh Status Indicator -->
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full">
+                        <div id="meshStatus" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
+                        <span id="meshStatusText" class="text-xs font-medium text-gray-700">Connected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+            <!-- Sidebar Header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                <div class="flex items-center gap-3">
+                    <img id="sidebarUserImage" src="/placeholder.svg?height=40&width=40" alt="User" class="w-10 h-10 rounded-full">
+                    <div>
+                        <p id="sidebarUserName" class="font-medium text-gray-900">Juan Dela Cruz</p>
+                        <p id="sidebarUserEmail" class="text-xs text-gray-500">juan.delacruz@gmail.com</p>
+                    </div>
+                </div>
+                <button id="closeSidebar" class="p-1 text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="flex-1 px-4 py-6 space-y-2">
+                <a href="home.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-home text-gray-600 w-5"></i>
+                    <span>Home</span>
+                </a>
+                <a href="alerts.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-bell text-gray-600 w-5"></i>
+                    <span>Alerts & Notifications</span>
+                </a>
+                <a href="report.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-plus-circle text-gray-600 w-5"></i>
+                    <span>Report Incident</span>
+                </a>
+                <a href="profile.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-user text-gray-600 w-5"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="history.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-history text-gray-600 w-5"></i>
+                    <span>Report History</span>
+                </a>
+                <a href="resources.html" class="flex items-center gap-3 px-3 py-2 text-gray-700 bg-blue-50 rounded-lg">
+                    <i class="fas fa-info-circle text-blue-600 w-5"></i>
+                    <span class="font-medium">Emergency Resources</span>
+                </a>
+            </div>
+            
+            <!-- Sidebar Footer -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg mb-3">
+                    <div id="meshStatusSidebar" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
+                    <span class="text-xs font-medium text-gray-700">Mesh: Connected</span>
+                </div>
+                <button class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24">
+        <!-- Emergency Quick Actions -->
+        <div class="mb-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Emergency Quick Actions</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Emergency Call Card -->
+                <div class="emergency-card bg-red-600 text-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-red-700 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-phone-alt text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">Emergency Call</h3>
+                                <p class="text-red-100 text-sm">Immediate assistance</p>
+                            </div>
+                        </div>
+                        <p class="text-red-100 text-sm mb-4">Call emergency services for immediate help</p>
+                        <button class="w-full py-3 bg-white text-red-600 font-bold rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-phone"></i>
+                            Call 911 / 117
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SOS Alert Card -->
+                <div class="emergency-card bg-orange-500 text-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-bell text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">SOS Alert</h3>
+                                <p class="text-orange-100 text-sm">Send emergency signal</p>
+                            </div>
+                        </div>
+                        <p class="text-orange-100 text-sm mb-4">Broadcast your location to nearby responders</p>
+                        <button class="w-full py-3 bg-white text-orange-600 font-bold rounded-lg hover:bg-orange-50 transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-location-arrow"></i>
+                            Send SOS Signal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- First Aid Guide Card -->
+                <div class="emergency-card bg-blue-600 text-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-blue-700 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-first-aid text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">First Aid Guide</h3>
+                                <p class="text-blue-100 text-sm">Emergency procedures</p>
+                            </div>
+                        </div>
+                        <p class="text-blue-100 text-sm mb-4">Step-by-step emergency medical instructions</p>
+                        <button class="w-full py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-book-medical"></i>
+                            View Guide
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Emergency Contacts</h2>
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="divide-y divide-gray-200">
+                    <!-- Police -->
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Philippine National Police</h3>
+                                <p class="text-sm text-gray-600">Emergency response & public safety</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                                <i class="fas fa-phone"></i>
+                                Call
+                            </button>
+                            <span class="text-lg font-bold text-gray-900">117 / 911</span>
+                        </div>
+                    </div>
+
+                    <!-- Fire Department -->
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-fire text-red-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Bureau of Fire Protection</h3>
+                                <p class="text-sm text-gray-600">Fire emergencies & rescue</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2">
+                                <i class="fas fa-phone"></i>
+                                Call
+                            </button>
+                            <span class="text-lg font-bold text-gray-900">117 / 911</span>
+                        </div>
+                    </div>
+
+                    <!-- Medical Emergency -->
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-ambulance text-green-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Emergency Medical Services</h3>
+                                <p class="text-sm text-gray-600">Medical emergencies & ambulance</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">
+                                <i class="fas fa-phone"></i>
+                                Call
+                            </button>
+                            <span class="text-lg font-bold text-gray-900">117 / 911</span>
+                        </div>
+                    </div>
+
+                    <!-- Coast Guard -->
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-ship text-indigo-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Philippine Coast Guard</h3>
+                                <p class="text-sm text-gray-600">Maritime emergencies & rescue</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2">
+                                <i class="fas fa-phone"></i>
+                                Call
+                            </button>
+                            <span class="text-lg font-bold text-gray-900">(02) 8527-8481</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Emergency Guides -->
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Emergency Preparedness Guides</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Earthquake Guide -->
+                <div class="resource-card bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-mountain text-yellow-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Earthquake Safety</h3>
+                                <p class="text-sm text-gray-600">Drop, Cover, and Hold On procedures</p>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-1 mb-4">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Identify safe spots in each room
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Create emergency supply kit
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Practice family emergency plan
+                            </li>
+                        </ul>
+                        <button class="w-full px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 transition-colors">
+                            View Full Guide
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Flood Guide -->
+                <div class="resource-card bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-water text-blue-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Flood Preparedness</h3>
+                                <p class="text-sm text-gray-600">Staying safe during floods</p>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-1 mb-4">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Move to higher ground immediately
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Avoid walking through moving water
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Do not drive in flooded areas
+                            </li>
+                        </ul>
+                        <button class="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                            View Full Guide
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Typhoon Guide -->
+                <div class="resource-card bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-wind text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Typhoon Preparedness</h3>
+                                <p class="text-sm text-gray-600">Before, during, and after typhoons</p>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-1 mb-4">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Secure your home and property
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Prepare emergency supplies
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Monitor weather updates
+                            </li>
+                        </ul>
+                        <button class="w-full px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors">
+                            View Full Guide
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fire Safety Guide -->
+                <div class="resource-card bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-fire text-red-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Fire Safety</h3>
+                                <p class="text-sm text-gray-600">Prevention and emergency response</p>
+                            </div>
+                        </div>
+                        <ul class="text-sm text-gray-600 space-y-1 mb-4">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Install smoke detectors
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Create escape plan
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check text-green-500 text-xs"></i>
+                                Know how to use fire extinguisher
+                            </li>
+                        </ul>
+                        <button class="w-full px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors">
+                            View Full Guide
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Emergency Kit Checklist -->
+        <section>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Emergency Kit Checklist</h2>
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <i class="fas fa-utensils text-blue-600"></i>
+                            Food & Water
+                        </h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <span class="text-sm text-gray-700">3-day water supply (1 gallon per person per day)</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <span class="text-sm text-gray-700">Non-perishable food (3-day supply)</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <span class="text-sm text-gray-700">Manual can opener</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <i class="fas fa-first-aid text-red-600"></i>
+                            Medical & Safety
+                        </h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <span class="text-sm text-gray-700">First aid kit</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <span class="text-sm text-gray-700">Prescription medications</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="rounded text-blue-600">
+                                <span class="text-sm text-gray-700">Flashlight with extra batteries</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <button class="w-full px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-download"></i>
+                        Download Complete Checklist
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-40">
+        <div class="flex justify-around items-center h-16">
+            <a href="home.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs">Home</span>
+            </a>
+            <a href="alerts.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-bell text-lg"></i>
+                <span class="text-xs">Alerts</span>
+            </a>
+            <a href="report.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <div class="w-12 h-12 -mt-6 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg">
+                    <i class="fas fa-plus text-white text-lg"></i>
+                </div>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-600">
+                <i class="fas fa-user text-lg"></i>
+                <span class="text-xs">Profile</span>
+            </a>
+            <button id="mobileMenuToggle" class="flex flex-col items-center gap-1 text-blue-600">
+                <i class="fas fa-info-circle text-lg"></i>
+                <span class="text-xs font-medium">Resources</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+        }
+        
+        function closeSidebarFunc() {
+            sidebar.classList.add('-translate-x-full');
+        }
+        
+        menuToggle.addEventListener('click', openSidebar);
+        mobileMenuToggle.addEventListener('click', openSidebar);
+        closeSidebar.addEventListener('click', closeSidebarFunc);
+        
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (event) => {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnMenuToggle = menuToggle.contains(event.target) || mobileMenuToggle.contains(event.target);
+            
+            if (!isClickInsideSidebar && !isClickOnMenuToggle && !sidebar.classList.contains('-translate-x-full')) {
+                closeSidebarFunc();
+            }
+        });
+
+        // Emergency call functionality
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('Call')) {
+                button.addEventListener('click', function() {
+                    const service = this.closest('.p-4').querySelector('h3').textContent;
+                    if (confirm(`Call ${service}? This will open your phone dialer.`)) {
+                        // In a real app, this would initiate a phone call
+                        alert(`Calling ${service}...`);
+                    }
+                });
+            }
+        });
+
+        // SOS Alert functionality
+        document.querySelector('button:contains("Send SOS Signal")').addEventListener('click', function() {
+            if (confirm('Send SOS emergency signal? This will alert nearby responders with your location.')) {
+                // Show loading state
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending SOS...';
+                this.disabled = true;
+                
+                // Simulate SOS sending
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-check"></i> SOS Sent!';
+                    alert('SOS signal sent! Nearby responders have been alerted.');
+                    
+                    // Reset button after 3 seconds
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }, 3000);
+                }, 2000);
+            }
+        });
+
+        // Guide buttons functionality
+        document.querySelectorAll('button:contains("View Full Guide")').forEach(button => {
+            button.addEventListener('click', function() {
+                const guideTitle = this.closest('.resource-card').querySelector('h3').textContent;
+                alert(`Opening ${guideTitle}...\n\nIn a real app, this would open a detailed guide with step-by-step instructions.`);
+            });
+        });
+
+        // Download checklist
+        document.querySelector('button:contains("Download Complete Checklist")').addEventListener('click', function() {
+            alert('Downloading Emergency Preparedness Checklist...\n\nIn a real app, this would download a PDF checklist.');
+        });
+
+        // Mesh status simulation
+        function updateMeshStatus() {
+            const statuses = [
+                { color: 'bg-green-500', text: 'Connected', class: 'mesh-status' },
+                { color: 'bg-yellow-500', text: 'Searching', class: 'mesh-status' },
+                { color: 'bg-red-500', text: 'Offline', class: '' }
+            ];
+            
+            const status = statuses[0]; // Default to connected
+            
+            document.getElementById('meshStatus').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
+            document.getElementById('meshStatusText').textContent = status.text;
+            document.getElementById('meshStatusSidebar').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
+        }
+
+        // Initialize
+        updateMeshStatus();
+        setInterval(updateMeshStatus, 5000);
+    </script>
+</body>
+</html>
