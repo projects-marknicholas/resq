@@ -8,37 +8,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            --dark: #1f2937;
-            --light: #f9fafb;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .mesh-status {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: .5;
-            }
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="css/report.css">
 </head>
 <body class="bg-gray-50">
     <!-- Top Navigation Bar -->
@@ -79,8 +50,8 @@
                 <div class="flex items-center gap-3">
                     <img src="/placeholder.svg?height=40&width=40" alt="User" class="w-10 h-10 rounded-full">
                     <div>
-                        <p class="font-medium text-gray-900">Juan Dela Cruz</p>
-                        <p class="text-xs text-gray-500">Verified Citizen</p>
+                        <p class="font-medium text-gray-900" id="sidebarUserName">Loading...</p>
+                        <p class="text-xs text-gray-500" id="sidebarUserEmail">Loading...</p>
                     </div>
                 </div>
                 <button id="closeSidebar" class="p-1 text-gray-500 hover:text-gray-700">
@@ -122,10 +93,10 @@
                     <div id="meshStatusSidebar" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
                     <span class="text-xs font-medium text-gray-700">Mesh: Connected</span>
                 </div>
-                <button class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
+                <a href="../index.html" class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
                     <i class="fas fa-sign-out-alt w-5"></i>
                     <span>Logout</span>
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -284,7 +255,7 @@
                 <button type="button" onclick="window.location.href='home.html'" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">
                     Cancel
                 </button>
-                <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-colors shadow-lg shadow-blue-500/30">
+                <button type="submit" id="submitBtn" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-colors shadow-lg shadow-blue-500/30">
                     Submit Report
                 </button>
             </div>
@@ -318,6 +289,14 @@
         </div>
     </nav>
 
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+            <p class="text-gray-700">Submitting report...</p>
+        </div>
+    </div>
+
     <!-- Confirmation Modal -->
     <div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
@@ -335,223 +314,7 @@
         </div>
     </div>
 
-    <script>
-        let map, marker;
-        let selectedType = null;
-        let selectedSeverity = null;
-        let photoAttached = false;
-
-        // Initialize map
-        function initMap() {
-            map = L.map('reportMap').setView([14.2769, 121.4164], 15);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            // Add draggable marker
-            marker = L.marker([14.2769, 121.4164], { draggable: true }).addTo(map);
-            
-            marker.on('dragend', function(e) {
-                const position = marker.getLatLng();
-                updateAddress(position.lat, position.lng);
-            });
-
-            // Try to get user's location
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    map.setView([lat, lng], 15);
-                    marker.setLatLng([lat, lng]);
-                    updateAddress(lat, lng);
-                });
-            }
-        }
-
-        function updateAddress(lat, lng) {
-            // In a real app, use reverse geocoding API
-            document.getElementById('address').value = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
-        }
-
-        // Sidebar functionality
-        const sidebar = document.getElementById('sidebar');
-        const menuToggle = document.getElementById('menuToggle');
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const closeSidebar = document.getElementById('closeSidebar');
-        
-        function openSidebar() {
-            sidebar.classList.remove('-translate-x-full');
-        }
-        
-        function closeSidebarFunc() {
-            sidebar.classList.add('-translate-x-full');
-        }
-        
-        menuToggle.addEventListener('click', openSidebar);
-        mobileMenuToggle.addEventListener('click', openSidebar);
-        closeSidebar.addEventListener('click', closeSidebarFunc);
-        
-        // Close sidebar when clicking outside
-        document.addEventListener('click', (event) => {
-            const isClickInsideSidebar = sidebar.contains(event.target);
-            const isClickOnMenuToggle = menuToggle.contains(event.target) || mobileMenuToggle.contains(event.target);
-            
-            if (!isClickInsideSidebar && !isClickOnMenuToggle && !sidebar.classList.contains('-translate-x-full')) {
-                closeSidebarFunc();
-            }
-        });
-
-        // Incident type selection
-        document.querySelectorAll('.incident-icon').forEach(button => {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('.incident-icon').forEach(btn => {
-                    btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
-                    btn.classList.add('border-gray-200');
-                    
-                    // Reset icon colors
-                    const icon = btn.querySelector('i');
-                    if (icon.classList.contains('fa-water')) icon.classList.add('text-blue-600');
-                    if (icon.classList.contains('fa-fire')) icon.classList.add('text-red-600');
-                    if (icon.classList.contains('fa-heartbeat')) icon.classList.add('text-green-600');
-                    if (icon.classList.contains('fa-car-crash')) icon.classList.add('text-yellow-600');
-                    if (icon.classList.contains('fa-shield-alt')) icon.classList.add('text-purple-600');
-                    if (icon.classList.contains('fa-mountain')) icon.classList.add('text-orange-600');
-                    if (icon.classList.contains('fa-bolt')) icon.classList.add('text-gray-600');
-                    if (icon.classList.contains('fa-ellipsis-h')) icon.classList.add('text-gray-600');
-                });
-                
-                this.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
-                this.classList.remove('border-gray-200');
-                
-                // Make icon white when selected
-                const icon = this.querySelector('i');
-                icon.classList.remove('text-blue-600', 'text-red-600', 'text-green-600', 'text-yellow-600', 'text-purple-600', 'text-orange-600', 'text-gray-600');
-                icon.classList.add('text-white');
-                
-                selectedType = this.dataset.type;
-                document.getElementById('incidentType').value = selectedType;
-            });
-        });
-
-        // Severity selection
-        document.querySelectorAll('.severity-option').forEach(button => {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('.severity-option').forEach(btn => {
-                    btn.classList.remove('border-blue-500', 'ring-2', 'ring-blue-200');
-                });
-                
-                this.classList.add('border-blue-500', 'ring-2', 'ring-blue-200');
-                selectedSeverity = this.dataset.severity;
-                document.getElementById('severity').value = selectedSeverity;
-            });
-        });
-
-        // Character counter
-        document.getElementById('description').addEventListener('input', function() {
-            const count = this.value.length;
-            document.getElementById('charCount').textContent = count;
-            if (count > 500) {
-                this.value = this.value.substring(0, 500);
-                document.getElementById('charCount').textContent = 500;
-            }
-        });
-
-        // Photo handling
-        document.getElementById('takePhotoBtn').addEventListener('click', function() {
-            document.getElementById('photoInput').click();
-        });
-
-        document.getElementById('photoInput').addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('cameraPreview').src = event.target.result;
-                    document.getElementById('cameraPreview').classList.remove('hidden');
-                    document.getElementById('cameraPlaceholder').classList.add('hidden');
-                    document.getElementById('removePhotoBtn').classList.remove('hidden');
-                    photoAttached = true;
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-
-        document.getElementById('removePhotoBtn').addEventListener('click', function() {
-            document.getElementById('cameraPreview').src = '';
-            document.getElementById('cameraPreview').classList.add('hidden');
-            document.getElementById('cameraPlaceholder').classList.remove('hidden');
-            document.getElementById('photoInput').value = '';
-            this.classList.add('hidden');
-            photoAttached = false;
-        });
-
-        // Form submission
-        document.getElementById('reportForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            if (!selectedType) {
-                alert('Please select an incident type');
-                return;
-            }
-
-            if (!selectedSeverity) {
-                alert('Please select a severity level');
-                return;
-            }
-
-            // Simulate submission
-            const isOnline = navigator.onLine;
-            const confirmationModal = document.getElementById('confirmationModal');
-            const confirmationMessage = document.getElementById('confirmationMessage');
-
-            if (isOnline) {
-                confirmationMessage.textContent = 'Your report has been successfully submitted and will be reviewed by our team.';
-            } else {
-                // Check if mesh peers are available (simulated)
-                const hasMeshPeers = Math.random() > 0.5; // Random for demo
-                if (hasMeshPeers) {
-                    confirmationMessage.textContent = 'Report shared with nearby devices for relay. It will be forwarded when they connect.';
-                } else {
-                    confirmationMessage.textContent = 'Report saved locally. Will auto-sync when a peer or internet connection is available.';
-                }
-            }
-
-            confirmationModal.classList.remove('hidden');
-        });
-
-        // Mesh status simulation
-        function updateMeshStatus() {
-            const statuses = [
-                { color: 'bg-green-500', text: 'Connected', class: 'mesh-status' },
-                { color: 'bg-yellow-500', text: 'Searching', class: 'mesh-status' },
-                { color: 'bg-red-500', text: 'Offline', class: '' }
-            ];
-            
-            const status = statuses[0]; // Default to connected
-            
-            document.getElementById('meshStatus').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
-            document.getElementById('meshStatusText').textContent = status.text;
-            document.getElementById('meshStatusSidebar').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
-        }
-
-        // Check online/offline status
-        function updateOnlineStatus() {
-            const offlineBanner = document.getElementById('offlineBanner');
-            if (!navigator.onLine) {
-                offlineBanner.classList.remove('hidden');
-            } else {
-                offlineBanner.classList.add('hidden');
-            }
-        }
-
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-
-        // Initialize
-        initMap();
-        updateMeshStatus();
-        updateOnlineStatus();
-        setInterval(updateMeshStatus, 5000);
-    </script>
+    <script src="js/report.js"></script>
+    <script src="js/user.js"></script>
 </body>
 </html>

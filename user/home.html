@@ -8,37 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            --dark: #1f2937;
-            --light: #f9fafb;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .mesh-status {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: .5;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body class="bg-gray-50">
     <!-- Top Navigation Bar -->
@@ -128,10 +98,10 @@
                     <div id="meshStatusSidebar" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
                     <span class="text-xs font-medium text-gray-700">Mesh: Connected</span>
                 </div>
-                <button class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
+                <a href="../index.html" class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
                     <i class="fas fa-sign-out-alt w-5"></i>
                     <span>Logout</span>
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -147,67 +117,6 @@
             </div>
         </div>
 
-        <!-- Latest Disaster Alerts -->
-        <section class="mb-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-gray-900">Latest Alerts</h2>
-                <a href="alerts.html" class="text-sm font-medium text-blue-600 hover:text-blue-700">View All</a>
-            </div>
-            
-            <div class="space-y-3">
-                <!-- Critical Alert -->
-                <div class="card bg-white border-l-4 border-red-600 rounded-lg p-4 shadow-sm">
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-exclamation-triangle text-red-600"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-semibold rounded">CRITICAL</span>
-                                <span class="text-xs text-gray-500">2 hours ago</span>
-                            </div>
-                            <h3 class="font-semibold text-gray-900 mb-1">Flood Warning - Barangay San Pablo</h3>
-                            <p class="text-sm text-gray-600">Heavy rainfall has caused flooding in low-lying areas. Residents are advised to evacuate to designated safe zones immediately.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Warning Alert -->
-                <div class="card bg-white border-l-4 border-yellow-500 rounded-lg p-4 shadow-sm">
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-bolt text-yellow-600"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">WARNING</span>
-                                <span class="text-xs text-gray-500">5 hours ago</span>
-                            </div>
-                            <h3 class="font-semibold text-gray-900 mb-1">Power Outage - Multiple Barangays</h3>
-                            <p class="text-sm text-gray-600">Scheduled maintenance will cause power interruption from 10 PM to 2 AM. Please prepare accordingly.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Info Alert -->
-                <div class="card bg-white border-l-4 border-blue-600 rounded-lg p-4 shadow-sm">
-                    <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-info-circle text-blue-600"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded">INFO</span>
-                                <span class="text-xs text-gray-500">1 day ago</span>
-                            </div>
-                            <h3 class="font-semibold text-gray-900 mb-1">Community Health Drive</h3>
-                            <p class="text-sm text-gray-600">Free medical check-up and vaccination program at Barangay Hall this Saturday, 8 AM - 4 PM.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Nearby Incidents Map -->
         <section class="mb-6">
             <div class="flex items-center justify-between mb-4">
@@ -220,12 +129,16 @@
                 <div class="p-4 border-t border-gray-200">
                     <div class="flex items-center justify-between text-sm">
                         <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 bg-red-600 rounded-full"></div>
-                            <span class="text-gray-600">Active Incidents: <span class="font-semibold text-gray-900">3</span></span>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <span class="text-gray-600">Pending: <span id="pendingCount" class="font-semibold text-gray-900">0</span></span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 bg-green-600 rounded-full"></div>
-                            <span class="text-gray-600">Resolved Today: <span class="font-semibold text-gray-900">12</span></span>
+                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                            <span class="text-gray-600">Ongoing: <span id="ongoingCount" class="font-semibold text-gray-900">0</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span class="text-gray-600">Resolved: <span id="resolvedCount" class="font-semibold text-gray-900">0</span></span>
                         </div>
                     </div>
                 </div>
@@ -234,45 +147,57 @@
 
         <!-- Quick Stats -->
         <section>
-            <h2 class="text-xl font-bold text-gray-900 mb-4">Your Activity</h2>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-file-alt text-blue-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-gray-900">8</p>
-                            <p class="text-sm text-gray-600">Reports Submitted</p>
-                        </div>
-                    </div>
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Your Activity</h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="bg-white rounded-lg shadow-sm p-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-file-alt text-blue-600 text-xl"></i>
                 </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-gray-900">6</p>
-                            <p class="text-sm text-gray-600">Resolved</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-clock text-yellow-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-gray-900">2</p>
-                            <p class="text-sm text-gray-600">Pending</p>
-                        </div>
-                    </div>
+                <div>
+                <p id="statsReportsSubmitted" class="text-2xl font-bold text-gray-900">0</p>
+                <p class="text-sm text-gray-600">Reports Submitted</p>
                 </div>
             </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+                <div>
+                <p id="statsResolved" class="text-2xl font-bold text-gray-900">0</p>
+                <p class="text-sm text-gray-600">Resolved</p>
+                </div>
+            </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                </div>
+                <div>
+                <p id="statsPending" class="text-2xl font-bold text-gray-900">0</p>
+                <p class="text-sm text-gray-600">Pending</p>
+                </div>
+            </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm p-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-chart-bar text-purple-600 text-xl"></i>
+                </div>
+                <div>
+                <p id="statsTotalIncidents" class="text-2xl font-bold text-gray-900">0</p>
+                <p class="text-sm text-gray-600">Total Incidents</p>
+                </div>
+            </div>
+            </div>
+        </div>
         </section>
     </main>
 
@@ -308,105 +233,7 @@
         <i class="fas fa-plus text-white text-xl"></i>
     </a>
 
-    <script>
-        // Initialize map
-        const map = L.map('map').setView([14.2769, 121.4164], 13);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Add incident markers
-        const incidents = [
-            { lat: 14.2769, lng: 121.4164, type: 'Flood', severity: 'high' },
-            { lat: 14.2850, lng: 121.4250, type: 'Fire', severity: 'critical' },
-            { lat: 14.2700, lng: 121.4100, type: 'Medical', severity: 'medium' }
-        ];
-
-        incidents.forEach(incident => {
-            const color = incident.severity === 'critical' ? 'red' : 
-                         incident.severity === 'high' ? 'orange' : 'yellow';
-            
-            const marker = L.circleMarker([incident.lat, incident.lng], {
-                radius: 8,
-                fillColor: color,
-                color: '#fff',
-                weight: 2,
-                opacity: 1,
-                fillOpacity: 0.8
-            }).addTo(map);
-            
-            marker.bindPopup(`<b>${incident.type}</b><br>Severity: ${incident.severity}`);
-        });
-
-        // Sidebar functionality
-        const sidebar = document.getElementById('sidebar');
-        const menuToggle = document.getElementById('menuToggle');
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const closeSidebar = document.getElementById('closeSidebar');
-        
-        function openSidebar() {
-            sidebar.classList.remove('-translate-x-full');
-        }
-        
-        function closeSidebarFunc() {
-            sidebar.classList.add('-translate-x-full');
-        }
-        
-        menuToggle.addEventListener('click', openSidebar);
-        mobileMenuToggle.addEventListener('click', openSidebar);
-        closeSidebar.addEventListener('click', closeSidebarFunc);
-        
-        // Close sidebar when clicking outside
-        document.addEventListener('click', (event) => {
-            const isClickInsideSidebar = sidebar.contains(event.target);
-            const isClickOnMenuToggle = menuToggle.contains(event.target) || mobileMenuToggle.contains(event.target);
-            
-            if (!isClickInsideSidebar && !isClickOnMenuToggle && !sidebar.classList.contains('-translate-x-full')) {
-                closeSidebarFunc();
-            }
-        });
-
-        // Simulate mesh network status
-        function updateMeshStatus() {
-            const statuses = [
-                { color: 'bg-green-500', text: 'Connected', class: 'mesh-status' },
-                { color: 'bg-yellow-500', text: 'Searching', class: 'mesh-status' },
-                { color: 'bg-red-500', text: 'Offline', class: '' }
-            ];
-            
-            // Randomly change status for demo (in real app, this would be based on actual connectivity)
-            const status = statuses[0]; // Default to connected
-            
-            document.getElementById('meshStatus').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
-            document.getElementById('meshStatusText').textContent = status.text;
-            document.getElementById('meshStatusSidebar').className = `w-2.5 h-2.5 rounded-full ${status.color} ${status.class}`;
-        }
-
-        // Check online/offline status
-        function updateOnlineStatus() {
-            const offlineBanner = document.getElementById('offlineBanner');
-            if (!navigator.onLine) {
-                offlineBanner.classList.remove('hidden');
-            } else {
-                offlineBanner.classList.add('hidden');
-            }
-        }
-
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-
-        // Initialize
-        updateMeshStatus();
-        updateOnlineStatus();
-        
-        // Update mesh status every 5 seconds
-        setInterval(updateMeshStatus, 5000);
-
-        // Notification button handler
-        document.getElementById('notificationBtn').addEventListener('click', function() {
-            window.location.href = 'alerts.html';
-        });
-    </script>
+    <script src="js/home.js"></script>
+    <script src="js/user.js"></script>
 </body>
 </html>

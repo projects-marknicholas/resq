@@ -137,10 +137,10 @@
                     <div id="meshStatusSidebar" class="w-2.5 h-2.5 rounded-full bg-green-500 mesh-status"></div>
                     <span class="text-xs font-medium text-gray-700">Mesh: Connected</span>
                 </div>
-                <button class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
+                <a href="../index.html" class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full">
                     <i class="fas fa-sign-out-alt w-5"></i>
                     <span>Logout</span>
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -616,5 +616,6 @@
         updateMeshStatus();
         setInterval(updateMeshStatus, 5000);
     </script>
+    <script src="js/user.js"></script>
 </body>
 </html>
